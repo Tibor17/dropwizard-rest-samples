@@ -10,18 +10,13 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>root-resource-class</artifactId>
+    <artifactId>security-tests</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.tibor17</groupId>
-            <artifactId>javaee7-rest-method-patch</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.tibor17</groupId>

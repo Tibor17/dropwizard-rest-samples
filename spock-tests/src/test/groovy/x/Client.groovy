@@ -1,0 +1,4 @@
+package x
+
+class Client {
+}

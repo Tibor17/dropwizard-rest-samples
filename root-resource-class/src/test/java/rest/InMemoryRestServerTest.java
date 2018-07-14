@@ -18,7 +18,10 @@ public class InMemoryRestServerTest {
     @Rule
     public final ResourceTestRule server = ResourceTestRule.builder()
             .setTestContainerFactory(new InMemoryTestContainerFactory())
+            .addProvider(JpaNoResultExceptionMapper.class)
+            .addProvider(ServerRuntimeExceptionMapper.class)
             .addProvider(ResourceExceptionMapper.class)
+            .addProvider(ServerErrorMapper.class)
             .addProvider(ObjectMapperProvider.class)
             .addProvider(RequestLogger.class)
             .addResource(() -> resource)

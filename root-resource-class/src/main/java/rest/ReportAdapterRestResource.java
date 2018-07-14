@@ -14,7 +14,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.HttpURLConnection;
 
-import static javax.ws.rs.core.MediaType.*;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.Response.ok;
 
 @Path("/report-adapter")
@@ -37,7 +38,7 @@ public class ReportAdapterRestResource {
     @GET
     @Path("no/content")
     @Produces({APPLICATION_XML, APPLICATION_JSON})
-    public XyzReport noContent() {
+    public XyzReport noContent() throws Exception {
         return myService.noContent();
     }
 
@@ -113,7 +114,7 @@ public class ReportAdapterRestResource {
     @PATCH
     @Path("report/{id}")
     @Consumes("application/json-patch+json")
-    public Response jsonPatch(@PathParam("id") long id, @Valid JsonArray report) {
+    public Response jsonPatch(@PathParam("id") long id, @NotNull @Valid JsonArray report) {
         // merge report with given id;
         return ok().build();
     }
@@ -140,7 +141,7 @@ public class ReportAdapterRestResource {
     @PATCH
     @Path("report/{id}")
     @Consumes("application/merge-patch+json")
-    public Response jsonMergePatch(@PathParam("id") long id, @Valid JsonObject report) {
+    public Response jsonMergePatch(@PathParam("id") long id, @NotNull @Valid JsonObject report) {
         // merge report with given id;
         return ok().build();
     }

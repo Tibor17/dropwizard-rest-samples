@@ -28,7 +28,10 @@ public class HttpPatchTest {
     @Rule
     public final ResourceTestRule server = ResourceTestRule.builder()
             .setTestContainerFactory(new GrizzlyTestContainerFactory())
+            .addProvider(JpaNoResultExceptionMapper.class)
+            .addProvider(ServerRuntimeExceptionMapper.class)
             .addProvider(ResourceExceptionMapper.class)
+            .addProvider(ServerErrorMapper.class)
             .addProvider(ObjectMapperProvider.class)
             .addProvider(RequestLogger.class)
             .addResource(() -> resource)

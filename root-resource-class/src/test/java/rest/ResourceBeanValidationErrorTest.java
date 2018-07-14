@@ -19,7 +19,11 @@ public class ResourceBeanValidationErrorTest {
     @Rule
     public final ResourceTestRule server = ResourceTestRule.builder()
             .setTestContainerFactory(new GrizzlyTestContainerFactory())
+            .addProvider(JpaNoResultExceptionMapper.class)
+            .addProvider(ServerRuntimeExceptionMapper.class)
             .addProvider(ResourceExceptionMapper.class)
+            .addProvider(ServerErrorMapper.class)
+            .addProvider(ValidationExceptionMapper.class)
             .addProvider(ObjectMapperProvider.class)
             .addProvider(RequestLogger.class)
             .addResource(() -> resource)
@@ -50,7 +54,9 @@ public class ResourceBeanValidationErrorTest {
                 .resolveTemplate("id", 1)
                 .request()
                 .put(xml(invalidReport));
+
         response.close();
+
         assertThat(response.getStatus())
                 // in case of GrizzlyTestContainerFactory
                 .isEqualTo(422); // Unprocessable Entity
