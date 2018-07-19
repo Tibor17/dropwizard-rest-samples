@@ -17,3 +17,6 @@
 
 [GitHub Spock Selenium Examples](https://github.com/saucelabs-sample-test-frameworks/Groovy-Geb-Spock-Selenium/blob/master/src/test/groovy/Pages/BingQueryPage.groovy)
 
+[Spock + Dropwizard + Guice](https://xvik.github.io/dropwizard-guicey/4.0.1/guide/test/)
+
+

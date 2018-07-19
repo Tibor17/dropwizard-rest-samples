@@ -2,12 +2,22 @@ package nonwebarchive.formsecurity;
 
 import filters.BasicAuthenticationServerFilter;
 import filters.BearerAuthenticationServerFilter;
+import filters.CdiPrincipalBindingServerFilter;
+import filters.PrincipalBackingObject;
+import io.dropwizard.Application;
+import io.dropwizard.Configuration;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.testing.ResourceHelpers;
+import io.dropwizard.testing.junit.DropwizardAppRule;
+import io.dropwizard.testing.junit.DropwizardClientRule;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.glassfish.jersey.test.inmemory.InMemoryTestContainerFactory;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import resource.RootResource;
+import services.MyService;
 
 import javax.json.JsonObject;
 import javax.ws.rs.core.Form;
@@ -23,7 +33,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NonWebArchiveHttpFormAuthenticationTest {
 
-    private final RootResource resource = new RootResource();
+    private final MyService service = new MyService();
+
+    private final RootResource resource = new RootResource(service);
+
+    /*@ClassRule
+    public static DropwizardAppRule<TestConfiguration> DROPWIZARD = new DropwizardAppRule<>(TestApp.class);*/
 
     @Rule
     public final ResourceTestRule server = ResourceTestRule.builder()
@@ -32,11 +47,23 @@ public class NonWebArchiveHttpFormAuthenticationTest {
             .addProvider(RolesAllowedDynamicFeature.class)
             .addProvider(BearerAuthenticationServerFilter.class)
             .addProvider(BasicAuthenticationServerFilter.class)
+            //.addProvider(CdiPrincipalBindingServerFilter.class)
             .addProvider(ObjectMapperProvider.class)
             .addResource(() -> resource)
             .build();
 
     private int serverPort;
+
+    /*public static class TestApp extends Application<TestConfiguration> {
+
+        @Override
+        public void run(TestConfiguration testConfiguration, Environment environment) throws Exception {
+        }
+    }
+
+    public static class TestConfiguration extends Configuration {
+
+    }*/
 
     @Before
     public void lookupFreeServerPort() {

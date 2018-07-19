@@ -2,8 +2,10 @@ package resource;
 
 import annotations.SecuredBasic;
 import annotations.SecuredBearer;
+import services.MyService;
 
 import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.*;
@@ -23,6 +25,16 @@ public class RootResource {
 
     @Context
     private SecurityContext ctx;
+
+    private MyService service;
+
+    public RootResource() {
+    }
+
+    @Inject
+    public RootResource(MyService service) {
+        this.service = service;
+    }
 
     @POST
     @Path("motor")
@@ -61,6 +73,7 @@ public class RootResource {
     @Produces(APPLICATION_JSON)
     public Response loadMotorDetailsWithBasicAuth() {
         Principal userPrincipal = ctx.getUserPrincipal();
+        System.out.println(userPrincipal);
 
         JsonObject report = Json.createObjectBuilder()
                 .add("reportName", "car-motor")

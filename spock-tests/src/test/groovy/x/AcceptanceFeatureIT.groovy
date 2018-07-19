@@ -5,8 +5,8 @@ import spock.lang.*
 @Title('This is just a Fake test to test spock-reports')
 @Narrative("""
 As a user
-I want foo
-So that bar""")
+I want to pay with my credit card
+So that transaction is recorded""")
 class AcceptanceFeatureIT extends Specification {
 
     def 'charging a credit card - happy path'() {
@@ -56,29 +56,36 @@ class AcceptanceFeatureIT extends Specification {
         similar.get(0) == 'Murder on the Orient Express'
     }
 
-    @Unroll('Running image #pictureFile with result #validPicture')
+    @Unroll('Running image #pictureFile with result #validPicture #quality')
     def 'Valid images are PNG and JPEG files'() {
         given: 'an image extension checker'
         ImageNameValidator validator = new ImageNameValidator()
 
-        expect: 'that only valid filenames are accepted'
+        expect: 'that only valid file names are accepted'
         validator.isValidImageExtension(pictureFile) == validPicture
+        validator.measurePictureQuality(pictureFile) == quality
 
         where: 'sample image names are'
-        pictureFile        | validPicture
-        'scenery.jpg'      | true
-        'house.jpeg'       | true
-        'car.png'          | true
-        'sky.tiff'         | false
-        'dance_bunny.gif'  | false
+        pictureFile        | validPicture | quality
+        'scenery.jpg'      | true         | 'medium'
+        'house.jpeg'       | true         | 'medium'
+        'car.png'          | true         | 'top'
+        'sky.tiff'         | false        | 'low'
+        'dance_bunny.gif'  | false        | 'high'
     }
 
     @PendingFeature
-    def 'Future feature'() {
+    def 'A feature which has production code in progress'() {
         when:
         'the feature is ready'
         then:
         'the annotation will be removed'
         throw new RuntimeException('Not ready')
+    }
+
+    @Issue('http://10.220.60.167:8080/browse/AUDIT-295')
+    def 'I have two related issues'() {
+        when: 'the feature is fixed in JIRA'
+        then: 'the issue should be closed'
     }
 }

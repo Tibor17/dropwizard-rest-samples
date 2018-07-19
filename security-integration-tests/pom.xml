@@ -11,5 +11,238 @@
     </parent>
 
     <artifactId>security-integration-tests</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <jvm.args.internationalized>-Xmx128m -XX:SoftRefLRUPolicyMSPerMB=50 -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Duser.region=US -Duser.language=en</jvm.args.internationalized>
+        <skipTests>false</skipTests>
+        <org.jboss.wildfly.version>13.0.0.Final</org.jboss.wildfly.version>
+        <jboss.home>${project.build.directory}/wildfly-${org.jboss.wildfly.version}</jboss.home>
+        <datasource.jndi>java:jboss/datasources/test</datasource.jndi>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.arquillian</groupId>
+                <artifactId>arquillian-universe</artifactId>
+                <version>1.2.0.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.universe</groupId>
+            <artifactId>arquillian-junit</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <version>2.1.1.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-testsuite-shared</artifactId>
+            <version>${org.jboss.wildfly.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>sun.jdk</groupId>
+                    <artifactId>jconsole</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}-exploded</finalName>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.12</version>
+                <executions>
+                    <execution>
+                        <id>lookup-unused-port</id>
+                        <!--
+                        must not be phase=pre-integration-test; otherwise surefire system property
+                        'managementPort' would not reference maven property value nothing but its name.
+                        -->
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>bsh-property</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <property>wildfly.management.portOffset</property>
+                                <property>wildfly.management.port</property>
+                                <property>wildfly.http.port</property>
+                            </properties>
+                            <source>
+                                <![CDATA[
+                                int offset = 3;// don't use 0,1,2=> 8081=McAfee, 8082=H2 web port
+                                do {
+                                    try {
+                                        Socket s = new Socket();
+                                        s.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), 8080 + offset));
+                                        s.close();
+                                        break;
+                                    } catch (BindException e) {
+                                        ++offset;
+                                    }
+                                } while (offset < 100);
+                                wildfly.management.portOffset = "" + offset;
+                                wildfly.management.port = "" + (9990 + offset);
+                                wildfly.http.port = "" + (8080 + offset);
+                                ]]>
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+                 An actual Wildfly instance is downloaded by the test itself.
+                 The wildfly distribution is unpacked in the ${project.build.directory} folder,
+                 so that it does not interfere with other servers and is deleted when mvn clean is executed
+             -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipITs}</skip>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-dist</artifactId>
+                                    <version>${org.jboss.wildfly.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>1.2.2.Final</version>
+                <executions>
+                    <execution>
+                        <id>wildfly-start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <configuration>
+                            <startupTimeout>60</startupTimeout>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>widfly-shutdown</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>shutdown</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jbossHome>${jboss.home}</jbossHome>
+                    <skip>${skipTests}</skip>
+                    <protocol>http-remoting</protocol>
+                    <hostname>127.0.0.1</hostname>
+                    <port>${wildfly.management.port}</port>
+                    <javaOpts>-Xmx512m,-XX:MaxMetaspaceSize=192m,-Djava.net.preferIPv4Stack=true,-Djboss.socket.binding.port-offset=${wildfly.management.portOffset},-Djboss.server.data.dir=${jboss.home}/.data-${wildfly.management.portOffset}</javaOpts>
+                    <serverConfig>standalone-full.xml</serverConfig>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>it</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <!--<argLine>${jvm.agent} ${jvm.args.internationalized}</argLine>-->
+                            <argLine>${jvm.args.internationalized}</argLine>
+                            <systemPropertyVariables>
+                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+
+                                <!--
+                                The same can be configures by 'serverConfig' in standalone.xml
+                                but it is good to know that the same can be configured in Surefire system properties.
+                                <jboss.server.config.file.name>standalone.xml</jboss.server.config.file.name>
+                                -->
+                                <jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name>
+                                <jboss.home>${jboss.home}</jboss.home>
+                                <!--
+                                https://developer.jboss.org/thread/263582?start=0&tstart=0
+                                <module.path>${jboss.home}/modules</module.path>
+                                -->
+
+                                <!--<org.apache.maven.user-settings>${settings}</org.apache.maven.user-settings>-->
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>it-verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/it-reports</reportsDirectory>
+                    <summaryFile>${project.build.directory}/it-reports/failsafe-summary.xml</summaryFile>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
