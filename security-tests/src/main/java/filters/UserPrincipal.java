@@ -4,7 +4,7 @@ import java.security.Principal;
 
 import static java.util.Objects.requireNonNull;
 
-final class UserPrincipal implements Principal {
+public final class UserPrincipal implements Principal {
     private final int id;
     private final String loginId;
     private final String role;

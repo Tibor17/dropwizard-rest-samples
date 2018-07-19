@@ -41,12 +41,8 @@ public class RestResourceIT {
     }
 
 
-    /**
-     * http://localhost:8080/audit-server/rest/api/audits/flows?{id}
-     * @throws Exception
-     */
     @Test
     //@OperateOnDeployment(value = "full-setup-test")
-    public void getFlow_shouldGetEmptyContent() throws Exception {
+    public void test() throws Exception {
     }
 }

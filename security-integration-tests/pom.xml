@@ -37,9 +37,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.tibor17</groupId>
+            <artifactId>security-tests</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>8.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

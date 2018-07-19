@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import java.security.Principal;
 
 @ApplicationScoped
+@SuppressWarnings("unused")
 public class CdiPrincipalProducer {
     @Inject
     private PrincipalBackingObject backingObject;
@@ -15,6 +16,7 @@ public class CdiPrincipalProducer {
     @Produces
     @RestPrincipal
     public Principal producePrincipal() {
-        return backingObject.getPrincipal();
+        Principal securePrincipal = backingObject.getPrincipal();
+        return securePrincipal == null ? () -> null : securePrincipal;
     }
 }

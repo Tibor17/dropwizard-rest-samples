@@ -28,6 +28,7 @@ public class RootResource {
 
     private MyService service;
 
+    @SuppressWarnings("unused")
     public RootResource() {
     }
 
@@ -46,6 +47,8 @@ public class RootResource {
                 .add("tradeoff", "Nissan")
                 .add("numberOfParts", 1)
                 .build();
+
+        service.doSomething();
 
         // old serializer - need newer Jersey, javax.json-api, javax.json, jackson-datatype-jsr353, jersey-media-json-jackson.
         return (isAuthorized(usr, pswd) ? ok(report.toString()) : status(UNAUTHORIZED)).build();
