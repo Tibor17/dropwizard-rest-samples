@@ -1,5 +1,6 @@
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OverProtocol;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -21,7 +22,7 @@ import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
 public class RestResourceIT {
 
     @ArquillianResource
-    private URL base;
+    private URL contextPath;
 
     @Deployment(testable = true, name = "full-setup-test")
     @TargetsContainer("arquillian-wildfly-managed")
@@ -33,15 +34,15 @@ public class RestResourceIT {
                 .loadPomFromFile("pom.xml")
                 .importBuildOutput()
                 .as(WebArchive.class)
-                /*.addAsLibraries(pom.resolve("org.assertj:assertj-core").withTransitivity().asFile())
+                .addAsLibraries(pom.resolve("org.assertj:assertj-core").withTransitivity().asFile())
                 .addAsLibraries(pom.resolve("io.rest-assured:rest-assured").withTransitivity().asFile())
-                .addClasses(AuditRestResourceTestData.class)*/
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource(new File("src/main/webapp/WEB-INF/web.xml"), "web.xml");
     }
 
 
     @Test
+    @RunAsClient
     //@OperateOnDeployment(value = "full-setup-test")
     public void test() throws Exception {
     }
