@@ -26,6 +26,7 @@
         <module>security-tests</module>
         <module>security-integration-tests</module>
         <module>spock-tests</module>
+        <module>jsonb</module>
     </modules>
 
     <dependencyManagement>
@@ -148,6 +149,11 @@
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.json</artifactId>
                 <version>${json-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
