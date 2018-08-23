@@ -13,6 +13,7 @@ import static javax.ws.rs.core.Response.status;
 public class ValidationExceptionMapper implements ExceptionMapper<ValidationException> {
     @Override
     public Response toResponse(ValidationException e) {
+        // https://stackoverflow.com/questions/16133923/400-vs-422-response-to-post-of-data
         return status(422)
                 .entity(e.getLocalizedMessage())
                 .type(TEXT_PLAIN_TYPE)
