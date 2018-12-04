@@ -1,6 +1,10 @@
 
 # References
 
+[Stubbing and Mocking in Java with the Spock Testing Framework](https://semaphoreci.com/community/tutorials/stubbing-and-mocking-in-java-with-the-spock-testing-framework)
+
+[Introduction to testing with BDD and the Spock Framework](https://www.pluralsight.com/guides/introduction-to-testing-with-bdd-and-the-spock-framework)
+
 [Spock testing framework versus JUnit](http://blog.codepipes.com/testing/spock-vs-junit.html)
 
 [Spock Framework Reference Documentation](http://spockframework.org/spock/docs/1.1/index.html)
