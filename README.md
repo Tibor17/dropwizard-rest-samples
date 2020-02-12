@@ -1,6 +1,8 @@
-Sample unit tests with Dropwizard.
+Sample unit tests with Dropwizard and Groovy/Spock.
 
-Tests of JAX-RS root resource class.
+Tests with JAX-RS root resource class.
+
+![Java CI](https://github.com/Tibor17/dropwizard-rest-samples/workflows/Java%20CI/badge.svg)
 
 ### References
 
