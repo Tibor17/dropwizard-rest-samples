@@ -340,6 +340,27 @@
                     <skip>${skip.jacoco.report}</skip>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <id>pmd-cpd-report</id>
+                        <reports>
+                            <report>pmd</report>
+                            <report>cpd</report>
+                        </reports>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <linkXRef>true</linkXRef>
+                            <targetJdk>${maven.compiler.source}</targetJdk>
+                            <failOnViolation>true</failOnViolation>
+                            <failurePriority>5</failurePriority>
+                            <verbose>true</verbose>
+                            <printFailingErrors>true</printFailingErrors>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+            </plugin>
             <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -441,27 +462,6 @@
                         <reports>
                             <report>report</report>
                         </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <id>pmd-cpd-report</id>
-                        <reports>
-                            <report>pmd</report>
-                            <report>cpd</report>
-                        </reports>
-                        <configuration>
-                            <aggregate>true</aggregate>
-                            <linkXRef>true</linkXRef>
-                            <targetJdk>${maven.compiler.source}</targetJdk>
-                            <failOnViolation>true</failOnViolation>
-                            <failurePriority>5</failurePriority>
-                            <verbose>true</verbose>
-                            <printFailingErrors>true</printFailingErrors>
-                        </configuration>
                     </reportSet>
                 </reportSets>
             </plugin>
