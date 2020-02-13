@@ -256,6 +256,10 @@
                     <version>3.13.0</version>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
@@ -312,6 +316,19 @@
 
     <reporting>
         <plugins>
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate-sources-report</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                            <report>test-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
