@@ -22,6 +22,16 @@
         <version.surefire>3.0.0-M4</version.surefire>
         <skip.jacoco.agent>false</skip.jacoco.agent>
         <skip.jacoco.report>false</skip.jacoco.report>
+		
+		<sonar.projectVersion>${project.version}</sonar.projectVersion>
+		<sonar.language>java</sonar.language>
+		<sonar.exclusions>src/main/resources/**</sonar.exclusions>
+		
+		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		
+		<sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
     </properties>
 
     <modules>
