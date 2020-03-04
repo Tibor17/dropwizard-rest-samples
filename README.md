@@ -4,6 +4,11 @@ Tests with JAX-RS root resource class.
 
 ![Java CI](https://github.com/Tibor17/dropwizard-rest-samples/workflows/Java%20CI/badge.svg)
 
+
+![sonar](/docs/sonar-ui.png)
+
+
+
 ### References
 
 [RESTful Integration Testing with WireMock in Java](https://semaphoreci.com/community/tutorials/restful-integration-testing-with-wiremock-in-java)
